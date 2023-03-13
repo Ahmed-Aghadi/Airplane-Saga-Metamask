@@ -3598,7 +3598,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -35, y: 80}
-  m_SizeDelta: {x: 200, y: 60}
+  m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &178035170
 MonoBehaviour:
@@ -5248,7 +5248,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -20, y: -20}
-  m_SizeDelta: {x: 120, y: 160}
+  m_SizeDelta: {x: 90, y: 120}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &300397162
 MonoBehaviour:
@@ -23291,7 +23291,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -35, y: 25}
-  m_SizeDelta: {x: 200, y: 60}
+  m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1251227641
 MonoBehaviour:
@@ -36296,7 +36296,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -20, y: -20}
-  m_SizeDelta: {x: 120, y: 160}
+  m_SizeDelta: {x: 90, y: 120}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1928788103
 MonoBehaviour:
@@ -48823,7 +48823,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 0101010101010101
-        actionIsOpen: 0001000000000000
+        actionIsOpen: 0000000101000000
         actionStartIndex: 00000000010000000b0000000c00000010000000140000001d0000001e000000
         actionHashCodes: 78c53001b032740078c530012a6e8a000c8bc100979e410478c53001ff77a904
         unityObjectParams: []
@@ -48868,7 +48868,7 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: 0.2
+          value: 0.3
         - useVariable: 1
           name: 
           tooltip: 
@@ -48886,7 +48886,7 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: 0.2
+          value: 0.5
         - useVariable: 1
           name: Rotation
           tooltip: 
@@ -48898,13 +48898,13 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: -20
+          value: -30
         - useVariable: 0
           name: 
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: 20
+          value: 30
         - useVariable: 1
           name: 
           tooltip: 
@@ -49043,7 +49043,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 0101010101010101
-        actionIsOpen: 0001000001000000
+        actionIsOpen: 0000000101000000
         actionStartIndex: 00000000010000000b0000000c00000010000000140000001d0000001e000000
         actionHashCodes: 78c53001b032740078c530012a6e8a000c8bc100979e410478c53001ff77a904
         unityObjectParams: []
@@ -49088,7 +49088,7 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: -0.2
+          value: -0.3
         - useVariable: 1
           name: 
           tooltip: 
@@ -49106,7 +49106,7 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: 0.2
+          value: 0.5
         - useVariable: 1
           name: Rotation
           tooltip: 
@@ -49118,13 +49118,13 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: -20
+          value: -30
         - useVariable: 0
           name: 
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: 20
+          value: 30
         - useVariable: 1
           name: 
           tooltip: 

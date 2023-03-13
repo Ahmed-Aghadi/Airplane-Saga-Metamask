@@ -139,7 +139,18 @@ public class Prefab_ConnectWallet : MonoBehaviour
         {
             Chain _chain = ThirdwebManager.Instance.chain;
             CurrencyValue nativeBalance = await ThirdwebManager.Instance.SDK.wallet.GetBalance();
-            balanceText.text = $"{nativeBalance.value.ToEth()} {nativeBalance.symbol}";
+            if (_chain == Chain.ThunderCoreTestnet)
+            {
+                balanceText.text = $"{nativeBalance.value.ToEth()} TST";
+            }
+            else if (_chain == Chain.MantleTestnet)
+            {
+                balanceText.text = $"{nativeBalance.value.ToEth()} BIT";
+            }
+            else
+            {
+                balanceText.text = $"{nativeBalance.value.ToEth()} {nativeBalance.symbol}";
+            }
             walletAddressText.text = address.ShortenAddress();
             currentNetworkText.text = ThirdwebManager.Instance.chainIdentifiers[_chain];
             currentNetworkImage.sprite = networkSprites.Find(x => x.chain == _chain).sprite;

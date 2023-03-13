@@ -18,13 +18,15 @@ public enum Chain
     Arbitrum = 42161,
     ArbitrumGoerli = 421613,
     Binance = 56,
-    BinanceTestnet = 97
+    BinanceTestnet = 97,
+    ThunderCoreTestnet = 18,
+    MantleTestnet = 5001
 }
 
 public class ThirdwebManager : MonoBehaviour
 {
     [Header("SETTINGS")]
-    public Chain chain = Chain.FantomTestnet;
+    public Chain chain = Chain.MantleTestnet;
     public List<Chain> supportedNetworks;
 
     public Dictionary<Chain, string> chainIdentifiers = new Dictionary<Chain, string>
@@ -34,7 +36,7 @@ public class ThirdwebManager : MonoBehaviour
         {Chain.Polygon, "polygon"},
         {Chain.Mumbai, "mumbai"},
         {Chain.Fantom, "fantom"},
-        {Chain.FantomTestnet, "testnet"},
+        {Chain.FantomTestnet, "fantom-testnet"},
         {Chain.Avalanche, "avalanche"},
         {Chain.AvalancheTestnet, "avalanche-testnet"},
         {Chain.Optimism, "optimism"},
@@ -43,6 +45,8 @@ public class ThirdwebManager : MonoBehaviour
         {Chain.ArbitrumGoerli, "arbitrum-goerli"},
         {Chain.Binance, "binance"},
         {Chain.BinanceTestnet, "binance-testnet"},
+        {Chain.ThunderCoreTestnet, "thundercore-testnet"},
+        {Chain.MantleTestnet, "mantle-testnet"}
     };
 
     public ThirdwebSDK SDK;
@@ -54,10 +58,17 @@ public class ThirdwebManager : MonoBehaviour
         if (Instance == null)
             Instance = this;
         else
-            Destroy(gameObject);
+            Destroy(this.gameObject);
 
 #if !UNITY_EDITOR
-        SDK = new ThirdwebSDK("https://fantom-testnet.rpc.thirdweb.com");
+        if(chain == Chain.ThunderCoreTestnet) {
+            SDK = new ThirdwebSDK("https://thundercore-testnet.rpc.thirdweb.com/ed043a51ae23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a");
+        } else if(chain == Chain.MantleTestnet){
+            SDK = new ThirdwebSDK("https://mantle-testnet.rpc.thirdweb.com/ed043a51ae23b0db3873f5a38b77ab28175fa496f15d3c53cf70401be89b622a");
+        }else {
+                    SDK = new ThirdwebSDK(chainIdentifiers[chain]);
+        }
 #endif
     }
+
 }

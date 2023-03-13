@@ -70,7 +70,15 @@ public class Web3 : MonoBehaviour
 
     private Contract GetGoldTokenDrop()
     {
-        return ThirdwebManager.Instance.SDK.GetContract("0x05c135b3B0Da5B1398874F252b57a8d19cf60008");
+        if(ThirdwebManager.Instance.chain == Chain.MantleTestnet)
+        {
+            return ThirdwebManager.Instance.SDK.GetContract("0x11DA0f57086a19977E46B548b64166411d839a30");
+        }
+        else // for thunderCore Testnet
+        {
+            return ThirdwebManager.Instance.SDK.GetContract("0x4B03368f666fa7579BfeB49eF1c5E405389b174e");
+        }
+        
     }
     public async void setDiamondBalance()
     {
@@ -108,7 +116,14 @@ public class Web3 : MonoBehaviour
 
     private Contract GetDiamondTokenDrop()
     {
-        return ThirdwebManager.Instance.SDK.GetContract("0x631c8C1342553EdE72a74c29B3475bf878AE3Cd7");
+        if (ThirdwebManager.Instance.chain == Chain.MantleTestnet)
+        {
+            return ThirdwebManager.Instance.SDK.GetContract("0x489d47E592639Ba11107E84dd6CCA08F0892E27d");
+        }
+        else // for thunderCore Testnet
+        {
+            return ThirdwebManager.Instance.SDK.GetContract("0x7c6822e60bD40ED9202d888344628f891bA2f0f8");
+        }
     }
     public async void decreaseGoldToken(string amount)
     {
@@ -321,7 +336,15 @@ public class Web3 : MonoBehaviour
 
     private Contract GetEdition()
     {
-        return ThirdwebManager.Instance.SDK.GetContract("0x59aA450B296c50553C5A02123ADb7a9B4BB92f5b");
+        if (ThirdwebManager.Instance.chain == Chain.MantleTestnet)
+        {
+            return ThirdwebManager.Instance.SDK.GetContract("0x9574E60E8aBeb8062CD3DCC3ed7714E067768a72");
+        }
+        else // for thunderCore Testnet
+        {
+            return ThirdwebManager.Instance.SDK.GetContract("0x04B8D96d7266adcb8fF45a0Eb8AFB91D79e58481");
+        }
+        
     }
 
     public async void buySkin1Gold()
@@ -1026,8 +1049,18 @@ public class Web3 : MonoBehaviour
 
     private Marketplace GetMarketplace()
     {
-        return ThirdwebManager.Instance.SDK
-            .GetContract("0xD687305714E0B84661860e94352dFDE259427591")
+        if (ThirdwebManager.Instance.chain == Chain.MantleTestnet)
+        {
+            return ThirdwebManager.Instance.SDK
+            .GetContract("0xCC571a70C092d1224e4A9f8013B66009301864E5")
             .marketplace;
+        }
+        else // for thunderCore Testnet
+        {
+            return ThirdwebManager.Instance.SDK
+            .GetContract("0x9574E60E8aBeb8062CD3DCC3ed7714E067768a72")
+            .marketplace;
+        }
+        
     }
 }
