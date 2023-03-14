@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using Thirdweb;
+using System;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -50,17 +51,25 @@ public class Web3 : MonoBehaviour
     public async void giveGoldBalance(string amount)
     {
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-        var result = await GetGoldTokenDrop().ERC20.Claim(amount);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetGoldTokenDrop().ERC20.Claim(amount);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
 
         setGoldBalance();
@@ -70,7 +79,7 @@ public class Web3 : MonoBehaviour
 
     private Contract GetGoldTokenDrop()
     {
-        if(ThirdwebManager.Instance.chain == Chain.MantleTestnet)
+        if (ThirdwebManager.Instance.chain == Chain.MantleTestnet)
         {
             return ThirdwebManager.Instance.SDK.GetContract("0x11DA0f57086a19977E46B548b64166411d839a30");
         }
@@ -78,7 +87,7 @@ public class Web3 : MonoBehaviour
         {
             return ThirdwebManager.Instance.SDK.GetContract("0x4B03368f666fa7579BfeB49eF1c5E405389b174e");
         }
-        
+
     }
     public async void setDiamondBalance()
     {
@@ -96,17 +105,25 @@ public class Web3 : MonoBehaviour
     public async void buyDiamondToken(string amount)
     {
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-        var result = await GetDiamondTokenDrop().ERC20.Claim(amount);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetDiamondTokenDrop().ERC20.Claim(amount);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
 
         setDiamondBalance();
@@ -128,17 +145,25 @@ public class Web3 : MonoBehaviour
     public async void decreaseGoldToken(string amount)
     {
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-        var result = await GetGoldTokenDrop().ERC20.Transfer(adminAddress, amount);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetGoldTokenDrop().ERC20.Transfer(adminAddress, amount);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
 
         setGoldBalance();
@@ -149,17 +174,25 @@ public class Web3 : MonoBehaviour
     public async void decreaseDiamondToken(string amount)
     {
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-        var result = await GetDiamondTokenDrop().ERC20.Transfer(adminAddress, amount);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetDiamondTokenDrop().ERC20.Transfer(adminAddress, amount);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
 
         setDiamondBalance();
@@ -344,7 +377,7 @@ public class Web3 : MonoBehaviour
         {
             return ThirdwebManager.Instance.SDK.GetContract("0x04B8D96d7266adcb8fF45a0Eb8AFB91D79e58481");
         }
-        
+
     }
 
     public async void buySkin1Gold()
@@ -352,20 +385,26 @@ public class Web3 : MonoBehaviour
         string listingId = "1";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnSkin1();
 
@@ -377,20 +416,26 @@ public class Web3 : MonoBehaviour
         string listingId = "2";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnSkin2();
 
@@ -402,20 +447,26 @@ public class Web3 : MonoBehaviour
         string listingId = "3";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnSkin3();
 
@@ -427,20 +478,26 @@ public class Web3 : MonoBehaviour
         string listingId = "4";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnSkin4();
 
@@ -452,20 +509,26 @@ public class Web3 : MonoBehaviour
         string listingId = "5";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnEngine1();
 
@@ -477,20 +540,26 @@ public class Web3 : MonoBehaviour
         string listingId = "6";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnEngine2();
 
@@ -502,20 +571,26 @@ public class Web3 : MonoBehaviour
         string listingId = "7";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnEngine3();
 
@@ -527,20 +602,26 @@ public class Web3 : MonoBehaviour
         string listingId = "8";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnMachineGun1();
 
@@ -552,20 +633,26 @@ public class Web3 : MonoBehaviour
         string listingId = "9";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnMachineGun2();
 
@@ -577,20 +664,26 @@ public class Web3 : MonoBehaviour
         string listingId = "10";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnMachineGun3();
 
@@ -602,20 +695,26 @@ public class Web3 : MonoBehaviour
         string listingId = "11";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnMissiles();
 
@@ -627,20 +726,26 @@ public class Web3 : MonoBehaviour
         string listingId = "12";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnBomb();
 
@@ -652,20 +757,26 @@ public class Web3 : MonoBehaviour
         string listingId = "13";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnNitro1();
 
@@ -677,20 +788,26 @@ public class Web3 : MonoBehaviour
         string listingId = "14";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setGoldBalance();
         setOwnNitro2();
 
@@ -702,20 +819,26 @@ public class Web3 : MonoBehaviour
         string listingId = "15";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnSkin1();
 
@@ -727,20 +850,26 @@ public class Web3 : MonoBehaviour
         string listingId = "16";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnSkin2();
 
@@ -752,20 +881,26 @@ public class Web3 : MonoBehaviour
         string listingId = "17";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnSkin3();
 
@@ -777,20 +912,26 @@ public class Web3 : MonoBehaviour
         string listingId = "18";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnSkin4();
 
@@ -802,20 +943,26 @@ public class Web3 : MonoBehaviour
         string listingId = "19";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnEngine1();
 
@@ -827,20 +974,26 @@ public class Web3 : MonoBehaviour
         string listingId = "20";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnEngine2();
 
@@ -852,20 +1005,26 @@ public class Web3 : MonoBehaviour
         string listingId = "21";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnEngine3();
 
@@ -877,20 +1036,26 @@ public class Web3 : MonoBehaviour
         string listingId = "22";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnMachineGun1();
 
@@ -902,20 +1067,26 @@ public class Web3 : MonoBehaviour
         string listingId = "23";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnMachineGun2();
 
@@ -927,20 +1098,26 @@ public class Web3 : MonoBehaviour
         string listingId = "24";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnMachineGun3();
 
@@ -952,20 +1129,26 @@ public class Web3 : MonoBehaviour
         string listingId = "25";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnMissiles();
 
@@ -977,20 +1160,26 @@ public class Web3 : MonoBehaviour
         string listingId = "26";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnBomb();
 
@@ -1002,20 +1191,26 @@ public class Web3 : MonoBehaviour
         string listingId = "27";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnNitro1();
 
@@ -1027,20 +1222,26 @@ public class Web3 : MonoBehaviour
         string listingId = "28";
 
         PlayMakerGlobals.Instance.Variables.FindFsmBool("LOADING").Value = true;
-
-        var result = await GetMarketplace().BuyListing(listingId, 1);
-
-        var isSuccess = result.isSuccessful();
-
-        if (isSuccess)
+        try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            var result = await GetMarketplace().BuyListing(listingId, 1);
+
+            var isSuccess = result.isSuccessful();
+
+            if (isSuccess)
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = true;
+            }
+            else
+            {
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            }
         }
-        else
+        catch (Exception e)
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("WasTransactionSuccessful").Value = false;
+            print($"Error: {e.Message}");
         }
-
         setDiamondBalance();
         setOwnNitro2();
 
@@ -1061,6 +1262,6 @@ public class Web3 : MonoBehaviour
             .GetContract("0x9574E60E8aBeb8062CD3DCC3ed7714E067768a72")
             .marketplace;
         }
-        
+
     }
 }

@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1.5
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 59d71b2c064a2a24b8dbc0a0cd4dcfd4, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 52277d34420a2a74eb9efe75b63ad473, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17828505, g: 0.2073804, b: 0.29700822, a: 1}
+  m_IndirectSpecularColor: {r: 0.22913827, g: 0.27321103, b: 0.29693815, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -22275,7 +22275,7 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: 7
+          value: 15
         fsmIntParams: []
         fsmBoolParams:
         - useVariable: 0
@@ -22400,8 +22400,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278255404
-  m_fontColor: {r: 0.17254902, g: 1, b: 0, a: 1}
+    rgba: 4278254591
+  m_fontColor: {r: 1, g: 0.9843137, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

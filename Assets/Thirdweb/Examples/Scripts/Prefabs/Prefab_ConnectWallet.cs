@@ -113,6 +113,7 @@ public class Prefab_ConnectWallet : MonoBehaviour
         try
         {
             PlayMakerGlobals.Instance.Variables.FindFsmInt("WALLET").Value = (int)_wallet;
+            PlayMakerGlobals.Instance.Variables.FindFsmInt("ChainId").Value = (int)ThirdwebManager.Instance.chain;
             address = await ThirdwebManager.Instance.SDK.wallet.Connect(
                new WalletConnection()
                {
@@ -138,6 +139,7 @@ public class Prefab_ConnectWallet : MonoBehaviour
         try
         {
             Chain _chain = ThirdwebManager.Instance.chain;
+            PlayMakerGlobals.Instance.Variables.FindFsmInt("ChainId").Value = (int)_chain;
             CurrencyValue nativeBalance = await ThirdwebManager.Instance.SDK.wallet.GetBalance();
             if (_chain == Chain.ThunderCoreTestnet)
             {
@@ -207,6 +209,7 @@ public class Prefab_ConnectWallet : MonoBehaviour
         {
             PlayMakerGlobals.Instance.Variables.FindFsmBool("IsNetworkSwitched").Value = true;
             ThirdwebManager.Instance.chain = _chain;
+            PlayMakerGlobals.Instance.Variables.FindFsmInt("ChainId").Value = (int)_chain;
             await ThirdwebManager.Instance.SDK.wallet.SwitchNetwork((int)_chain);
             OnConnected();
             if (OnSwitchNetworkCallback != null)

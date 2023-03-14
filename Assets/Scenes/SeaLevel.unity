@@ -32911,7 +32911,7 @@ MonoBehaviour:
           tooltip: 
           showInInspector: 0
           networkSync: 0
-          value: 7
+          value: 15
         fsmIntParams: []
         fsmBoolParams:
         - useVariable: 0
@@ -33036,8 +33036,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278255404
-  m_fontColor: {r: 0.17243624, g: 1, b: 0, a: 1}
+    rgba: 4278254591
+  m_fontColor: {r: 1, g: 0.98475444, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
