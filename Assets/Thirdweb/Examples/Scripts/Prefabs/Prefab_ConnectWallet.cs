@@ -205,6 +205,7 @@ public class Prefab_ConnectWallet : MonoBehaviour
 
         try
         {
+            PlayMakerGlobals.Instance.Variables.FindFsmBool("IsNetworkSwitched").Value = true;
             ThirdwebManager.Instance.chain = _chain;
             await ThirdwebManager.Instance.SDK.wallet.SwitchNetwork((int)_chain);
             OnConnected();
