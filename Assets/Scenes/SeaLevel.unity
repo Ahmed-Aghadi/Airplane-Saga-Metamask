@@ -9690,7 +9690,7 @@ MonoBehaviour:
   fsm:
     dataVersion: 2
     usedInTemplate: {fileID: 0}
-    name: HeightMeter
+    name: SpeedMeter
     startState: SpeedMeter
     states:
     - name: SpeedMeter
@@ -19320,7 +19320,7 @@ MonoBehaviour:
         customNames:
         - 
         actionEnabled: 01
-        actionIsOpen: 00
+        actionIsOpen: 01
         actionStartIndex: 00000000
         actionHashCodes: 074b1504
         unityObjectParams: []
@@ -31607,7 +31607,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 010101010101
-        actionIsOpen: 000000000000
+        actionIsOpen: 000100000000
         actionStartIndex: 000000000500000008000000090000000e0000000f000000
         actionHashCodes: a0dd83039ff80c0278c5300181294e0478c5300148c01101
         unityObjectParams: []
@@ -31766,7 +31766,7 @@ MonoBehaviour:
         customNames:
         - 
         actionEnabled: 01
-        actionIsOpen: 00
+        actionIsOpen: 01
         actionStartIndex: 00000000
         actionHashCodes: e688d305
         unityObjectParams: []
@@ -60411,7 +60411,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 0101
-        actionIsOpen: 0100
+        actionIsOpen: 0101
         actionStartIndex: 0000000005000000
         actionHashCodes: 81294e049845b305
         unityObjectParams: []
@@ -60527,7 +60527,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 0101010101010101
-        actionIsOpen: 0000000000000000
+        actionIsOpen: 0000000001000101
         actionStartIndex: 00000000050000000a0000001100000012000000160000001a0000001e000000
         actionHashCodes: 81294e04b2cf10005552ad0578c5300187aa970087aa970087aa970087aa9700
         unityObjectParams: []
@@ -78323,7 +78323,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 010101
-        actionIsOpen: 000000
+        actionIsOpen: 010100
         actionStartIndex: 00000000060000000c000000
         actionHashCodes: 6053230160532301230cc800
         unityObjectParams: []
@@ -79428,6 +79428,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4056739085138668284}
   - component: {fileID: 4056739085138900703}
+  - component: {fileID: 4056739085138900711}
   - component: {fileID: 4056739085138900701}
   - component: {fileID: 4056739085138900704}
   - component: {fileID: 4056739085138900705}
@@ -79436,7 +79437,6 @@ GameObject:
   - component: {fileID: 4056739085138900708}
   - component: {fileID: 4056739085138900710}
   - component: {fileID: 4056739085138900709}
-  - component: {fileID: 4056739085138900711}
   - component: {fileID: 4056739085138900712}
   - component: {fileID: 4056739085138900713}
   - component: {fileID: 4056739085138900714}
@@ -80082,7 +80082,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 01010101
-        actionIsOpen: 00000000
+        actionIsOpen: 01010100
         actionStartIndex: 0000000004000000090000000e000000
         actionHashCodes: 87aa9700b2cf1000b2cf100034b46c04
         unityObjectParams: []
@@ -82411,7 +82411,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 01010101010101
-        actionIsOpen: 00000000000000
+        actionIsOpen: 00000000010001
         actionStartIndex: 0000000004000000090000000e0000000f0000001400000016000000
         actionHashCodes: 87aa9700b2cf1000b2cf100078c53001a0dd830315264c0181294e04
         unityObjectParams: []
@@ -86356,7 +86356,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 0101
-        actionIsOpen: 0000
+        actionIsOpen: 0001
         actionStartIndex: 0000000006000000
         actionHashCodes: 60532301b2cf1000
         unityObjectParams: []
@@ -87467,7 +87467,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 01010101010101
-        actionIsOpen: 00000000010000
+        actionIsOpen: 01000000010000
         actionStartIndex: 00000000030000000800000009000000100000001700000018000000
         actionHashCodes: 873c7504b2cf100078c530015552ad051bcdca0478c5300188611604
         unityObjectParams: []
@@ -87730,7 +87730,7 @@ MonoBehaviour:
         - 
         - 
         actionEnabled: 01010101
-        actionIsOpen: 00000001
+        actionIsOpen: 01010001
         actionStartIndex: 00000000030000000800000009000000
         actionHashCodes: 873c7504b2cf100078c5300188611604
         unityObjectParams: []

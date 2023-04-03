@@ -6,6 +6,17 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+
+using System.Threading.Tasks;
+
+using MetaMask.Unity;
+using MetaMask.Models;
+
+using Nethereum.Hex.HexTypes;
+
 public enum Wallet
 {
     MetaMask,
@@ -13,6 +24,7 @@ public enum Wallet
     CoinbaseWallet,
     WalletConnect,
     MagicAuth,
+    MetamaskMobile
 }
 
 [Serializable]
@@ -30,8 +42,75 @@ public struct NetworkSprite
     public Sprite sprite;
 }
 
+
+public class GetBalanceParams
+{
+    [JsonProperty("address")]
+    [JsonPropertyName("address")]
+    public string Address { get; set; }
+
+}
+public class SwitchChainParams
+{
+
+    [JsonProperty("chainId")]
+    [JsonPropertyName("chainId")]
+    public string ChainId { get; set; }
+
+}
+
+public class AddEthereumChainParams
+{
+    [JsonProperty("chainId")]
+    [JsonPropertyName("chainId")]
+    public string ChainId { get; set; }
+
+    [JsonProperty("chainName")]
+    [JsonPropertyName("chainName")]
+    public string ChainName { get; set; }
+
+    [JsonProperty("rpcUrls")]
+    [JsonPropertyName("rpcUrls")]
+    public string[] RpcUrls { get; set; }
+
+    [JsonProperty("nativeCurrency")]
+    [JsonPropertyName("nativeCurrency")]
+    public NativeCurrencyCustom NativeCurrency { get; set; }
+
+    [JsonProperty("blockExplorerUrls")]
+    [JsonPropertyName("blockExplorerUrls")]
+    public string[] BlockExplorerUrls { get; set; }
+}
+public class NativeCurrencyCustom
+{
+    [JsonProperty("name")]
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+
+    [JsonProperty("symbol")]
+    [JsonPropertyName("symbol")]
+    public string Symbol { get; set; }
+
+    [JsonProperty("decimals")]
+    [JsonPropertyName("decimals")]
+    public int Decimals { get; set; }
+}
+
+public class ErrorJson
+{
+    [JsonProperty("code")]
+    [JsonPropertyName("code")]
+    public string code { get; set; }
+
+}
+
 public class Prefab_ConnectWallet : MonoBehaviour
 {
+
+    [Header("Metamask SDK")]
+    public Button connectWalletButton;
+    public Sprite connectWalletButtonIcon;
+
     [Header("SETTINGS")]
     public List<Wallet> supportedWallets;
     public bool supportSwitchingNetwork;
@@ -65,6 +144,16 @@ public class Prefab_ConnectWallet : MonoBehaviour
     Wallet wallet;
 
 
+    private void Awake()
+    {
+        MetaMaskUnity.Instance.Initialize();
+        var wallet = MetaMaskUnity.Instance.Wallet;
+        wallet.AccountChanged += OnAccountChanged;
+        wallet.ChainIdChanged += OnChainIdChanged;
+        MetaMaskUnity.Instance.LoadSession();
+    }
+
+
     // UI Initialization
 
     private void Start()
@@ -76,7 +165,7 @@ public class Prefab_ConnectWallet : MonoBehaviour
         else
             connectButton.GetComponent<Button>().onClick.AddListener(() => OnClickDropdown());
 
-
+        connectWalletButton.onClick.AddListener(() => OnConnect(Wallet.MetamaskMobile));
         foreach (WalletButton wb in walletButtons)
         {
             if (supportedWallets.Contains(wb.wallet))
@@ -100,9 +189,63 @@ public class Prefab_ConnectWallet : MonoBehaviour
         networkDropdown.SetActive(false);
     }
 
+    public void MetamaskConnect()
+    {
+        print("Connect clicked");
+        var wallet = MetaMaskUnity.Instance.Wallet;
+        wallet.Connect();
+
+    }
+    public void OnAccountChanged(object sender, EventArgs e)
+    {
+        print("Account Changed");
+        print("Wallet address OnAccountChanged: " + MetaMaskUnity.Instance.Wallet.SelectedAddress);
+        try
+        {
+            address = MetaMaskUnity.Instance.Wallet.SelectedAddress;
+            var chainHex = ThirdwebManager.Instance.chain == Chain.MantleTestnet ? "0x1389" : "0x12";
+            if (MetaMaskUnity.Instance.Wallet.SelectedChainId != chainHex)
+            {
+                print("Chain ID Metamask: " + MetaMaskUnity.Instance.Wallet.SelectedChainId);
+                print("Chain ID Required: " + ThirdwebManager.Instance.chain);
+                OnSwitchNetwork(ThirdwebManager.Instance.chain);
+            }
+            else
+            {
+                OnConnected();
+            }
+            PlayMakerGlobals.Instance.Variables.FindFsmBool("IsWalletConnected").Value = true;
+            if (OnConnectedCallback != null)
+                OnConnectedCallback.Invoke();
+            print($"Connected successfully to: {address}");
+        }
+        catch (Exception ex)
+        {
+            print($"Error Connecting Wallet: {ex.Message}");
+        }
+    }
+
+    public async Task<string> GetBalance(string walletAddress)
+    {
+        var paramsArray = new string[] { walletAddress };
+        var request = new MetaMaskEthereumRequest
+        {
+            Method = "eth_getBalance",
+            Parameters = paramsArray
+        };
+        // onTransactionSent?.Invoke(this, EventArgs.Empty);
+        var response = await MetaMaskUnity.Instance.Wallet.Request(request);
+        print("response: " + response.ToString());
+        return response.ToString();
+    }
+
     public void ConnectAgain()
     {
         Wallet wallet = (Wallet)PlayMakerGlobals.Instance.Variables.GetFsmInt("WALLET").Value;
+        if (wallet == Wallet.MetamaskMobile)
+        {
+            MetaMaskUnity.Instance.LoadSession();
+        }
         OnConnect(wallet);
     }
 
@@ -112,21 +255,33 @@ public class Prefab_ConnectWallet : MonoBehaviour
     {
         try
         {
+            wallet = _wallet;
             PlayMakerGlobals.Instance.Variables.FindFsmInt("WALLET").Value = (int)_wallet;
             PlayMakerGlobals.Instance.Variables.FindFsmInt("ChainId").Value = (int)ThirdwebManager.Instance.chain;
-            address = await ThirdwebManager.Instance.SDK.wallet.Connect(
-               new WalletConnection()
-               {
-                   provider = GetWalletProvider(_wallet),
-                   chainId = (int)ThirdwebManager.Instance.chain,
-               });
+            if (_wallet == Wallet.MetamaskMobile)
+            {
+                print("Metamask Button clicked");
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("IsMetamaskClicked").Value = true;
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("HideQrCode").Value = false;
+                MetaMaskUnity.Instance.Wallet.Connect();
+            }
+            else
+            {
+                print("Other Buttons clicked");
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("HideQrCode").Value = true;
+                address = await ThirdwebManager.Instance.SDK.wallet.Connect(
+                   new WalletConnection()
+                   {
+                       provider = GetWalletProvider(_wallet),
+                       chainId = (int)ThirdwebManager.Instance.chain,
+                   });
 
-            wallet = _wallet;
-            OnConnected();
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("IsWalletConnected").Value = true;
-            if (OnConnectedCallback != null)
-                OnConnectedCallback.Invoke();
-            print($"Connected successfully to: {address}");
+                OnConnected();
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("IsWalletConnected").Value = true;
+                if (OnConnectedCallback != null)
+                    OnConnectedCallback.Invoke();
+                print($"Connected successfully to: {address}");
+            }
         }
         catch (Exception e)
         {
@@ -138,31 +293,66 @@ public class Prefab_ConnectWallet : MonoBehaviour
     {
         try
         {
+            MetaMaskUnity.Instance.SaveSession();
             Chain _chain = ThirdwebManager.Instance.chain;
             PlayMakerGlobals.Instance.Variables.FindFsmInt("ChainId").Value = (int)_chain;
-            CurrencyValue nativeBalance = await ThirdwebManager.Instance.SDK.wallet.GetBalance();
-            if (_chain == Chain.ThunderCoreTestnet)
+            if (wallet == Wallet.MetamaskMobile)
             {
-                balanceText.text = $"{nativeBalance.value.ToEth()} TST";
-            }
-            else if (_chain == Chain.MantleTestnet)
-            {
-                balanceText.text = $"{nativeBalance.value.ToEth()} BIT";
+                print("address: " + MetaMaskUnity.Instance.Wallet.SelectedAddress);
+                print("chain: " + MetaMaskUnity.Instance.Wallet.SelectedChainId);
+                string balanceHex = await GetBalance(address);
+                var balanceHexBigInt = new HexBigInteger(balanceHex);
+                var balanceBigInt = balanceHexBigInt.Value;
+                print("balance parsed: " + balanceBigInt.ToString());
+                if (_chain == Chain.ThunderCoreTestnet)
+                {
+                    balanceText.text = $"{balanceBigInt.ToString().ToEth()} TST";
+                }
+                else if (_chain == Chain.MantleTestnet)
+                {
+                    balanceText.text = $"{balanceBigInt.ToString().ToEth()} BIT";
+                }
+                else
+                {
+                    balanceText.text = $"{balanceBigInt.ToString().ToEth()} ETH";
+                }
+                walletAddressText.text = address.ShortenAddress();
+                currentNetworkText.text = ThirdwebManager.Instance.chainIdentifiers[_chain];
+                currentNetworkImage.sprite = networkSprites.Find(x => x.chain == _chain).sprite;
+                connectButton.SetActive(false);
+                connectedButton.SetActive(true);
+                connectDropdown.SetActive(false);
+                connectedDropdown.SetActive(false);
+                networkDropdown.SetActive(false);
+                walletImage.sprite = connectWalletButtonIcon;
+                chainImage.sprite = networkSprites.Find(x => x.chain == _chain).sprite;
             }
             else
             {
-                balanceText.text = $"{nativeBalance.value.ToEth()} {nativeBalance.symbol}";
+                CurrencyValue nativeBalance = await ThirdwebManager.Instance.SDK.wallet.GetBalance();
+                if (_chain == Chain.ThunderCoreTestnet)
+                {
+                    balanceText.text = $"{nativeBalance.value.ToEth()} TST";
+                }
+                else if (_chain == Chain.MantleTestnet)
+                {
+                    balanceText.text = $"{nativeBalance.value.ToEth()} BIT";
+                }
+                else
+                {
+                    balanceText.text = $"{nativeBalance.value.ToEth()} {nativeBalance.symbol}";
+                }
+                walletAddressText.text = address.ShortenAddress();
+                currentNetworkText.text = ThirdwebManager.Instance.chainIdentifiers[_chain];
+                currentNetworkImage.sprite = networkSprites.Find(x => x.chain == _chain).sprite;
+                connectButton.SetActive(false);
+                connectedButton.SetActive(true);
+                connectDropdown.SetActive(false);
+                connectedDropdown.SetActive(false);
+                networkDropdown.SetActive(false);
+                walletImage.sprite = walletButtons.Find(x => x.wallet == wallet).icon;
+                chainImage.sprite = networkSprites.Find(x => x.chain == _chain).sprite;
             }
-            walletAddressText.text = address.ShortenAddress();
-            currentNetworkText.text = ThirdwebManager.Instance.chainIdentifiers[_chain];
-            currentNetworkImage.sprite = networkSprites.Find(x => x.chain == _chain).sprite;
-            connectButton.SetActive(false);
-            connectedButton.SetActive(true);
-            connectDropdown.SetActive(false);
-            connectedDropdown.SetActive(false);
-            networkDropdown.SetActive(false);
-            walletImage.sprite = walletButtons.Find(x => x.wallet == wallet).icon;
-            chainImage.sprite = networkSprites.Find(x => x.chain == _chain).sprite;
         }
         catch (Exception e)
         {
@@ -177,7 +367,14 @@ public class Prefab_ConnectWallet : MonoBehaviour
     {
         try
         {
-            await ThirdwebManager.Instance.SDK.wallet.Disconnect();
+            if (wallet == Wallet.MetamaskMobile)
+            {
+                MetaMaskUnity.Instance.Disconnect();
+            }
+            else
+            {
+                await ThirdwebManager.Instance.SDK.wallet.Disconnect();
+            }
             OnDisconnected();
             PlayMakerGlobals.Instance.Variables.FindFsmBool("IsWalletConnected").Value = false;
             if (OnDisconnectedCallback != null)
@@ -207,10 +404,109 @@ public class Prefab_ConnectWallet : MonoBehaviour
 
         try
         {
-            PlayMakerGlobals.Instance.Variables.FindFsmBool("IsNetworkSwitched").Value = true;
+            print("chain switch to: " + _chain.ToString());
             ThirdwebManager.Instance.chain = _chain;
+            print("wallet is metamask!!!" + wallet.ToString());
             PlayMakerGlobals.Instance.Variables.FindFsmInt("ChainId").Value = (int)_chain;
-            await ThirdwebManager.Instance.SDK.wallet.SwitchNetwork((int)_chain);
+            if (wallet == Wallet.MetamaskMobile)
+            {
+                print("wallet is metamask");
+                SwitchChain(_chain);
+            }
+            else
+            {
+                await ThirdwebManager.Instance.SDK.wallet.SwitchNetwork((int)_chain);
+                PlayMakerGlobals.Instance.Variables.FindFsmBool("IsNetworkSwitched").Value = true;
+                OnConnected();
+                if (OnSwitchNetworkCallback != null)
+                    OnSwitchNetworkCallback.Invoke();
+                print($"Switched Network Successfully: {_chain}");
+            }
+
+        }
+        catch (Exception e)
+        {
+            print($"Error Switching Network: {e.Message}");
+        }
+    }
+
+    public async void SwitchChain(Chain _chain)
+    {
+        string chainHex = _chain == Chain.MantleTestnet ? "0x1389" : "0x12";
+
+        var data = new SwitchChainParams
+        {
+            ChainId = chainHex
+        };
+
+        var request = new MetaMaskEthereumRequest
+        {
+            Method = "wallet_switchEthereumChain",
+            Parameters = new SwitchChainParams[] { data }
+        };
+        // onTransactionSent?.Invoke(this, EventArgs.Empty);
+        try
+        {
+            await MetaMaskUnity.Instance.Wallet.Request(request);
+            PlayMakerGlobals.Instance.Variables.FindFsmBool("IsNetworkSwitched").Value = true;
+            OnConnected();
+            if (OnSwitchNetworkCallback != null)
+                OnSwitchNetworkCallback.Invoke();
+            print($"Switched Network Successfully: {_chain}");
+        }
+        catch (Exception e)
+        {
+            print("Error switching chain: " + e.Message);
+            AddEthereumChain(_chain);
+        }
+    }
+
+    public async void AddEthereumChain(Chain _chain)
+    {
+        AddEthereumChainParams data = null;
+        if (_chain == Chain.MantleTestnet)
+        {
+
+            data = new AddEthereumChainParams
+            {
+                ChainId = "0x1389",
+                ChainName = "Mantle Testnet",
+                RpcUrls = new string[] { "https://rpc.testnet.mantle.xyz" },
+                NativeCurrency = new NativeCurrencyCustom
+                {
+                    Name = "BIT",
+                    Symbol = "BIT",
+                    Decimals = 18
+                },
+                BlockExplorerUrls = new string[] { "https://explorer.testnet.mantle.xyz" }
+            };
+        }
+        else
+        {
+
+            data = new AddEthereumChainParams
+            {
+                ChainId = "0x12",
+                ChainName = "ThunderCore Testnet",
+                RpcUrls = new string[] { "https://testnet-rpc.thundercore.com" },
+                NativeCurrency = new NativeCurrencyCustom
+                {
+                    Name = "TST",
+                    Symbol = "TST",
+                    Decimals = 18
+                },
+                BlockExplorerUrls = new string[] { "https://explorer-testnet.thundercore.com" }
+            };
+        }
+        var request = new MetaMaskEthereumRequest
+        {
+            Method = "wallet_addEthereumChain",
+            Parameters = new AddEthereumChainParams[] { data }
+        };
+        // onTransactionSent?.Invoke(this, EventArgs.Empty);
+        try
+        {
+            await MetaMaskUnity.Instance.Wallet.Request(request);
             OnConnected();
             if (OnSwitchNetworkCallback != null)
                 OnSwitchNetworkCallback.Invoke();
@@ -219,8 +515,16 @@ public class Prefab_ConnectWallet : MonoBehaviour
         }
         catch (Exception e)
         {
-            print($"Error Switching Network: {e.Message}");
+            print("Error adding chain: " + e.Message);
         }
+
+    }
+
+
+    public void OnChainIdChanged(object sender, EventArgs e)
+    {
+        print("Chain Id Changed");
+        OnConnected();
     }
 
     // UI
